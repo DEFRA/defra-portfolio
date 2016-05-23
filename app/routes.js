@@ -6,26 +6,27 @@ var express = require('express'),
   A way to force the ordering of the themes.
 */
 var theme_order = [
-      // 'Universal Credit',
-      'Health & Disability',
-      'Working Age',
-      'Retirement Provision',
-      'Fraud & Debt',
-      'Platforms'
+      'Strategic Outcome Reviews',
+      'Incidents & Assets Services',
+      'Permissions & Compliance Services',
+      'Monitoring Services',
+      'Animal Movement & Tracking Services',
+      'Cross Defra Services',
+      'Architectural Runway; Common Services'
     ];
 
 var priority_order = [
-      'Top',
+      // 'Top',
       'High',
       'Medium',
       'Low'
     ];
 
 var priority_descriptions = {
-      "Top":"Helping people return to work through Universal Credit and solving urgent problems that affect the whole department.",
-      "High":"Helping people prepare for retirement and manage their debt.",
-      "Medium":"Helping people apply for and get existing products across the department.",
-      "Low":"Non-urgent services and those that have short-term benefit."
+      // "Top":"",
+      "High":"",
+      "Medium":"",
+      "Low":""
     };
 
 /*
