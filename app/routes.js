@@ -12,7 +12,7 @@ var theme_order = [
       'Monitoring Services',
       'Animal Movement & Tracking Services',
       'Cross Defra Services',
-      'Architectural Runway; Common Services'
+      'Architectural Runway-Common Services'
     ];
 
 var priority_order = [
