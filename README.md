@@ -1,6 +1,7 @@
 # Defra Digital Service Portfolio
 
 [![Build Status](https://travis-ci.org/EnvironmentAgency/defra-portfolio.svg?branch=master)](https://travis-ci.org/EnvironmentAgency/defra-portfolio)
+[![Dependency Status](https://david-dm.org/environmentagency/defra-portfolio.svg)](https://david-dm.org/environmentagency/defra-portfolio)
 
 [Take a look](http://defra-digital-services.herokuapp.com/)
 
