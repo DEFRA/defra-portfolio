@@ -1,5 +1,7 @@
 # Defra Digital Service Portfolio
 
+[![Build Status](https://travis-ci.org/EnvironmentAgency/defra-portfolio.svg?branch=master)](https://travis-ci.org/EnvironmentAgency/defra-portfolio)
+
 [Take a look](http://defra-digital-services.herokuapp.com/)
 
 ## Adding a new project
