@@ -9,7 +9,7 @@ var theme_order = [
       'Incidents & Assets Services',
       'Permissions & Compliance Services',
       'Monitoring Services',
-      'Animal Movement & Tracking Services',
+      'Animal & Plant Health',
       'Cross Defra Services',
       'Architectural Runway-Common Services'
     ];
