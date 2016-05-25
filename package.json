@@ -5,6 +5,11 @@
   "engines": {
     "node": "4.x"
   },
+  "scripts": {
+    "start": "node server.js",
+    "build": "grunt --gruntfile Gruntfile.js generate-assets",
+    "postinstall": "npm run build"
+  },
   "dependencies": {
     "basic-auth-connect": "1.0.0",
     "browser-sync": "^2.10.0",
