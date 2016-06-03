@@ -14,3 +14,7 @@ Take a look at /lib/projects/defaults.js for a template of what a project should
 Create a unique project file eg project.js copy in the configuration, give the project a unique ID, commits to master will be deployed automatically to the site.
 
 Site content is maintained by @colinbanno https://github.com/colinbanno
+
+### Credit
+
+Credit to https://github.com/dwpdigitaltech/dwp-portfolio from where this site has been cloned and adjusted to Defra.
