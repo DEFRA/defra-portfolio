@@ -31,6 +31,7 @@
 #footer {display:none}
 
 $backlog-colour: $purple;
+$review-colour: $mauve;
 
 /*
   Top of the page phase banner bits.
@@ -44,6 +45,7 @@ $backlog-colour: $purple;
   text-transform:uppercase;
 }
 .tag.backlog   {background-color:$backlog-colour}
+.tag.review    {background-color:$review-colour;}
 .tag.discovery {background-color:$discovery-colour;}
 .tag.alpha     {background-color:$alpha-colour;}
 .tag.beta      {background-color:$beta-colour;}
@@ -54,10 +56,14 @@ $backlog-colour: $purple;
   font-weight:700;
   text-align:center;
 }
+.big_number_padding {
+  padding-top: 0.25em;
+}
 /*
   Convienience classes for colouring text.
 */
 .txt-backlog    {color:$backlog-colour}
+.txt-review     {color:$review-colour}
 .txt-discovery  {color:$discovery-colour}
 .txt-alpha      {color:$alpha-colour}
 .txt-beta       {color:$beta-colour}
@@ -110,6 +116,7 @@ $backlog-colour: $purple;
 }
 
 .border-backlog   {border-color:$backlog-colour;}
+.border-review    {border-color:$review-colour;}
 .border-discovery {border-color:$discovery-colour;}
 .border-alpha     {border-color:$alpha-colour;}
 .border-beta      {border-color:$beta-colour;}
@@ -117,6 +124,7 @@ $backlog-colour: $purple;
 .border-internal  {border-color:$black;}
 
 .circle.backlog   {background-color:$backlog-colour;}
+.circle.review    {background-color:$review-colour;}
 .circle.discovery {background-color:$discovery-colour;}
 .circle.alpha     {background-color:$alpha-colour;}
 .circle.beta      {background-color:$beta-colour;}
@@ -162,7 +170,14 @@ $backlog-colour: $purple;
     width:20%;
   }
 }
-
+.column-sixth {
+  box-sizing:border-box;
+  padding:0 15px;
+  @media (min-width: 640px) {
+    float:left;
+    width:16.5%;
+  }
+}
 .videoWrapper {
 	position: relative;
 	padding-bottom: 51%;
