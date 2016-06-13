@@ -31,7 +31,7 @@ var priority_descriptions = {
 /*
   A way to force the ordering of the phases.
 */
-var phase_order = ['backlog','review','discovery','alpha','beta','live'];
+var phase_order = ['backlog','discovery','alpha','beta','betaPublic','live'];
 
 /*
   A function to gather the data by

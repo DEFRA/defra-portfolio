@@ -1,7 +1,7 @@
 @import 'elements';
 
 $backlog-colour: $purple;
-$review-colour: $mauve;
+$betaPublic-colour: $yellow;
 
 /*
   Layout stuff.
@@ -16,10 +16,10 @@ html,body { height: 100%; margin: 0px; padding: 0px; overflow:hidden }
   overflow:hidden;
   background-color:$turquoise;
   &.phase-backlog { background-color:$backlog-colour;}
-  &.phase-review { background-color:$review-colour;}
   &.phase-discovery { background-color:$discovery-colour;}
   &.phase-alpha { background-color:$alpha-colour;}
   &.phase-beta { background-color:$beta-colour;}
+  &.phase-betaPublic { background-color:$betaPublic-colour;}
   &.phase-live { background-color:$live-colour;}
   
     margin:0 auto;
