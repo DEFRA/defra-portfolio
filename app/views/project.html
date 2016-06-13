@@ -18,10 +18,27 @@
 			<div class="location">Based in <strong>{{ data.location }}</strong></div>
 
 			{% if data.video %}
-			<div style="margin-top:30px;" class="videoWrapper">
-				<iframe width="560" height="315" src="{{ data.video }}" frameborder="0" allowfullscreen></iframe>
-			</div>
+                <div style="margin-top:30px;" class="videoWrapper">
+                    <iframe width="560" height="315" src="{{ data.video }}" frameborder="0" allowfullscreen></iframe>
+                </div>
 			{% endif %}
+            
+            <h2 class="heading-medium">Anticipated Outcomes</h2>
+            <div style="margin-left:1em;">
+                {% for item in data["outcomes"] %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </div>
+            
+            <h2 class="heading-medium">Planned Benefits</h2>
+            <div style="margin-left:1em;">
+                {% for item in data["benefits"] %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </div>
+            
+            <h2 class="heading-medium">Anticipated Cost</h2>
+            <p>{{ data.cost | default('Not set') }}</p>
 
 			<h2 class="heading-medium">Project history</h2>
 			<div class="phase-history">
@@ -61,7 +78,13 @@
 
 			<h3 class="heading-small">Service Manager</h3>
 			<p>{{ data.service_man | default('Not set') }}</p>
-
+            
+            <h3 class="heading-small">Product Manager</h3>
+			<p>{{ data.product_man | default('Not set') }}</p>
+            
+            <h3 class="heading-small">Delivery Manager</h3>
+			<p>{{ data.delivery_man | default('Not set') }}</p>
+            
 			<!--<h3 class="heading-small">Prototype Link</h3>
 			<p><a href="{{ data.prototype | default('#') }}">{{ data.prototype | default('http://not.set/') }}</a></p>-->
 
