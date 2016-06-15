@@ -31,7 +31,6 @@
 #footer {display:none}
 
 $backlog-colour: $purple;
-$betaPublic-colour: $yellow;
 
 /*
   Top of the page phase banner bits.
@@ -44,30 +43,27 @@ $betaPublic-colour: $yellow;
   text-decoration:none;
   text-transform:uppercase;
 }
-.tag.backlog    {background-color:$backlog-colour}
-.tag.discovery  {background-color:$discovery-colour;}
-.tag.alpha      {background-color:$alpha-colour;}
-.tag.beta       {background-color:$beta-colour;}
-.tag.betaPublic {background-color:$betaPublic-colour;}
-.tag.live       {background-color:$live-colour;}
+.tag.backlog     {background-color:$backlog-colour}
+.tag.discovery   {background-color:$discovery-colour;}
+.tag.alpha       {background-color:$alpha-colour;}
+.tag.beta        {background-color:$beta-colour;}
+.tag.beta_public {background-color:$beta-colour;}
+.tag.live        {background-color:$live-colour;}
 
 .big_number {
   font-size:96px;
   font-weight:700;
   text-align:center;
 }
-.big_number_padding {
-  padding-top: 0.25em;
-}
 /*
   Convienience classes for colouring text.
 */
-.txt-backlog    {color:$backlog-colour}
-.txt-discovery  {color:$discovery-colour}
-.txt-alpha      {color:$alpha-colour}
-.txt-beta       {color:$beta-colour}
-.txt-betaPublic {color:$betaPublic-colour}
-.txt-live       {color:$live-colour}
+.txt-backlog     {color:$backlog-colour}
+.txt-discovery   {color:$discovery-colour}
+.txt-alpha       {color:$alpha-colour}
+.txt-beta        {color:$beta-colour}
+.txt-beta_public {color:$beta-colour}
+.txt-live        {color:$live-colour}
 /*
   Lists of links
 */
@@ -115,20 +111,20 @@ $betaPublic-colour: $yellow;
   padding:4px 10px 2px;
 }
 
-.border-backlog    {border-color:$backlog-colour;}
-.border-discovery  {border-color:$discovery-colour;}
-.border-alpha      {border-color:$alpha-colour;}
-.border-beta       {border-color:$beta-colour;}
-.border-betaPublic {border-color:$betaPublic-colour;}
-.border-live       {border-color:$live-colour;}
-.border-internal   {border-color:$black;}
+.border-backlog     {border-color:$backlog-colour;}
+.border-discovery   {border-color:$discovery-colour;}
+.border-alpha       {border-color:$alpha-colour;}
+.border-beta        {border-color:$beta-colour;}
+.border-beta_public {border-color:$beta-colour;}
+.border-live        {border-color:$live-colour;}
+.border-internal    {border-color:$black;}
 
-.circle.backlog    {background-color:$backlog-colour;}
-.circle.discovery  {background-color:$discovery-colour;}
-.circle.alpha      {background-color:$alpha-colour;}
-.circle.beta       {background-color:$beta-colour;}
-.circle.betaPublic {background-color:$betaPublic-colour;}
-.circle.live       {background-color:$live-colour;}
+.circle.backlog     {background-color:$backlog-colour;}
+.circle.discovery   {background-color:$discovery-colour;}
+.circle.alpha       {background-color:$alpha-colour;}
+.circle.beta        {background-color:$beta-colour;}
+.circle.beta_public {background-color:$beta-colour;}
+.circle.live        {background-color:$live-colour;}
 
 .phase_modifier {
   font-size:16px;

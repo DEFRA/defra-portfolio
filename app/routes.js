@@ -31,8 +31,17 @@ var priority_descriptions = {
 /*
   A way to force the ordering of the phases.
 */
-var phase_order = ['backlog','discovery','alpha','beta','betaPublic','live'];
-
+var phase_order = ['backlog','discovery','alpha','beta','beta_public','live'];
+/*
+  A function to add the phase-key value to handle
+  splitting out public beta projects.
+*/
+function addPhaseKey(data)
+{
+  return _.each(data, function(value, key, list) {
+      value['phase-key'] = getPhase(value);
+  });
+}
 /*
   A function to gather the data by
   'phase' and then 'facing' so the
@@ -43,7 +52,7 @@ function indexify(data)
   var new_data = {};
   _.each(data, function(value, key, list)
   {
-    var item = _.groupBy(value,'phase');
+    var item = _.groupBy(value,'phase-key');
     new_data[key] = {};
     _.each(item, function(v,k,l)
     {
@@ -53,15 +62,30 @@ function indexify(data)
   });
   return new_data;
 }
-
+/*
+  A function to return the phase from the
+  specified object.
+*/
+function getPhase(obj)
+{
+  if (obj.phase == "beta" &&
+      obj.phase_modifier &&
+      obj.phase_modifier == "public") {
+    return obj.phase + "_" + obj.phase_modifier;
+  }
+  else {
+    return obj.phase;
+  }
+}
 /*
   - - - - - - - - - -  INDEX PAGE - - - - - - - - - -
 */
 router.get('/', function (req, res)
 {
-  var data = _.groupBy(req.app.locals.data, 'theme');
+  var data = addPhaseKey(req.app.locals.data);
+  data = _.groupBy(data, 'theme');
   var new_data = indexify(data);
-  var phases = _.countBy(req.app.locals.data, 'phase');
+  var phases = _.countBy(req.app.locals.data, getPhase);
   res.render('index', {
     "data":new_data,
     "counts":phases,
@@ -77,7 +101,8 @@ router.get('/', function (req, res)
 */
 router.get('/location/', function (req, res)
 {
-  var data = _.groupBy(req.app.locals.data, 'location');
+  var data = addPhaseKey(req.app.locals.data);
+  data = _.groupBy(req.app.locals.data, 'location');
   var new_data = indexify(data);
 
   var loc_order = [];
@@ -87,7 +112,8 @@ router.get('/location/', function (req, res)
   });
   loc_order.sort();
 
-  var phases = _.countBy(req.app.locals.data, 'phase');
+  var phases = _.countBy(req.app.locals.data, getPhase);
+
   res.render('index', {
     "data":new_data,
     "counts":phases,
@@ -103,10 +129,11 @@ router.get('/location/', function (req, res)
 */
 router.get('/priority/', function (req, res)
 {
-  var data = _.groupBy(req.app.locals.data, 'priority');
+  var data = addPhaseKey(req.app.locals.data);
+  data = _.groupBy(req.app.locals.data, 'priority');
   var new_data = indexify(data);
 
-  var phases = _.countBy(req.app.locals.data, 'phase');
+  var phases = _.countBy(req.app.locals.data, getPhase);
 
   res.render('index', {
     "data":new_data,
