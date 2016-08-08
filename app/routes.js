@@ -9,9 +9,9 @@ var theme_order = [
       'Incidents & Assets Services',
       'Permissions & Compliance Services',
       'Monitoring Services',
-      'Animal & Plant Health',
+      'Livestock Information Services',
       'Cross Defra Services',
-      'Architectural Runway-Common Services'
+      'Common Architectural Services'
     ];
 
 var priority_order = [
