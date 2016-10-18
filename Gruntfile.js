@@ -1,13 +1,16 @@
-module.exports = function(grunt){
-  grunt.initConfig({
+module.exports = function (grunt) {
+  var config = {
     // Clean
-    clean: ['public', 'govuk_modules'],
+    clean: [
+      'public',
+      'govuk_modules'
+    ],
 
     // Builds Sass
     sass: {
       dev: {
         options: {
-          style: "expanded",
+          style: 'expanded',
           sourcemap: true,
           includePaths: [
             'govuk_modules/govuk_template/assets/stylesheets',
@@ -17,10 +20,10 @@ module.exports = function(grunt){
         },
         files: [{
           expand: true,
-          cwd: "app/assets/sass",
-          src: ["*.scss"],
-          dest: "public/stylesheets/",
-          ext: ".css"
+          cwd: 'app/assets/sass',
+          src: ['*.scss'],
+          dest: 'public/stylesheets/',
+          ext: '.css'
         }]
       }
     },
@@ -36,19 +39,21 @@ module.exports = function(grunt){
         }]
       },
       govuk: {
-        files: [{
-          expand: true,
-          cwd: 'node_modules/govuk_frontend_toolkit',
-          src: '**',
-          dest: 'govuk_modules/govuk_frontend_toolkit/'
-        },
-        {
-          expand: true,
-          cwd: 'node_modules/govuk_template_mustache/',
-          src: '**',
-          dest: 'govuk_modules/govuk_template/'
-        }]
-      },
+        files: [
+          {
+            expand: true,
+            cwd: 'node_modules/govuk_frontend_toolkit',
+            src: '**',
+            dest: 'govuk_modules/govuk_frontend_toolkit/'
+          },
+          {
+            expand: true,
+            cwd: 'node_modules/govuk_template_mustache/',
+            src: '**',
+            dest: 'govuk_modules/govuk_template/'
+          }
+        ]
+      }
     },
 
     // workaround for libsass
@@ -69,14 +74,14 @@ module.exports = function(grunt){
         files: ['app/assets/sass/**/*.scss'],
         tasks: ['sass'],
         options: {
-          spawn: false,
+          spawn: false
         }
       },
-      assets:{
+      assets: {
         files: ['app/assets/**/*', '!app/assets/sass/**'],
         tasks: ['copy:assets'],
         options: {
-          spawn: false,
+          spawn: false
         }
       }
     },
@@ -94,16 +99,18 @@ module.exports = function(grunt){
     },
 
     concurrent: {
-        target: {
-            tasks: ['watch', 'nodemon'],
-            options: {
-                logConcurrentOutput: true
-            }
+      target: {
+        tasks: ['watch', 'nodemon'],
+        options: {
+          logConcurrentOutput: true
         }
+      }
     }
-  });
+  }
 
-  [
+  grunt.initConfig(config)
+
+  var tasks = [
     'grunt-contrib-copy',
     'grunt-contrib-watch',
     'grunt-contrib-clean',
@@ -111,9 +118,11 @@ module.exports = function(grunt){
     'grunt-nodemon',
     'grunt-text-replace',
     'grunt-concurrent'
-  ].forEach(function (task) {
-    grunt.loadNpmTasks(task);
-  });
+  ]
+
+  tasks.forEach(function (task) {
+    grunt.loadNpmTasks(task)
+  })
 
   // grunt.registerTask(
   //   'convert_template',
@@ -132,21 +141,17 @@ module.exports = function(grunt){
     // 'convert_template',
     'replace',
     'sass'
-  ]);
+  ])
 
   grunt.registerTask('default', [
     'generate-assets',
     'concurrent:target'
-  ]);
+  ])
 
-  grunt.event.on('watch', function(action, filepath, target) {
-
+  grunt.event.on('watch', function (action, filepath, target) {
     // just copy the asset that was changed, not all of them
-
-    if (target == "assets"){
-      grunt.config('copy.assets.files.0.src', filepath.replace("app/assets/",""));
+    if (target === 'assets') {
+      grunt.config('copy.assets.files.0.src', filepath.replace('app/assets/', ''))
     }
-
-  });
-
-};
+  })
+}

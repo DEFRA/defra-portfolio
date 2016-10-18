@@ -1,0 +1,35 @@
+{
+  "portfolioIdField": "uid",
+  "projectOnlineIdField": "ProjectId",
+  "filenameField": "ProjectName",
+  "fieldMap": [
+    {
+      "portfolio": "uid",
+      "projectOnline": "ProjectId"
+    },
+    {
+      "portfolio": "name",
+      "projectOnline": "ProjectName",
+      "translator": "name"
+    },
+    {
+      "portfolio": "description",
+      "projectOnline": "ProjectDescription"
+    },
+    {
+      "portfolio": "phase",
+      "projectOnline": "LifecycleStage",
+      "translator": "phase"
+    },
+    {
+      "portfolio": "cost",
+      "projectOnline": "ProjectActualCost",
+      "translator": "cost"
+    },
+    {
+      "portfolio": "phase-history",
+      "projectOnline": "Tasks",
+      "translator": "history"
+    }
+  ]
+}
