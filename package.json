@@ -36,7 +36,7 @@
     "minimist": "0.0.8",
     "node-sass": "3.3.3",
     "nodegit": "^0.14.1",
-    "odata": "0.4.0",
+    "odata": "0.3.0",
     "readdir": "0.0.6",
     "serve-favicon": "2.3.0",
     "underscore": "^1.8.3"
