@@ -2,7 +2,6 @@ var path = require('path')
 var express = require('express')
 var browserSync = require('browser-sync')
 var nunjucks = require('express-nunjucks')
-var load = require(path.join(__dirname, '/auto_update/load.js'))
 require(path.join(__dirname, '/auto_update/cron.js'))
 var routes = require(path.join(__dirname, '/app/routes.js'))
 var disRoutes = require(path.join(__dirname, '/app/views/display/routes.js'))
@@ -10,9 +9,6 @@ var favicon = require('serve-favicon')
 var app = express()
 var port = process.env.PORT || 3100
 var env = process.env.NODE_ENV || 'development'
-
-// Get the projects
-app.locals.data = load.getProjects()
 
 // Application settings
 app.set('view engine', 'html')

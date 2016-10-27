@@ -162,16 +162,7 @@ function _updateProjects (portfolioProjects, projectOnlineProjects) {
     })
   })
 
-  fs.readdir(path.join(__dirname, '/../lib/projects/'), (err, files) => {
-    if (err) {
-      throw err
-    }
-    files.forEach(file => {
-      console.log(file)
-    })
-  })
-
-  console.log('Completed update. Restart node server')
+  console.log('Completed update')
 }
 
 /*

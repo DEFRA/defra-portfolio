@@ -1,6 +1,8 @@
 var express = require('express')
 var router = express.Router()
 var _ = require('underscore')
+var path = require('path')
+var load = require(path.join(__dirname, '../auto_update/load.js'))
 
 /*
   A way to force the ordering of the themes.
@@ -86,10 +88,11 @@ function getPhase (obj) {
   - - - - - - - - - -  INDEX PAGE - - - - - - - - - -
 */
 router.get('/', function (req, res) {
-  var data = addPhaseKey(req.app.locals.data)
+  var data = load.getProjects()
+  data = addPhaseKey(data)
   data = _.groupBy(data, 'theme')
   var newData = indexify(data)
-  var phases = _.countBy(req.app.locals.data, getPhase)
+  var phases = _.countBy(data, getPhase)
   res.render('index', {
     data: newData,
     counts: phases,
@@ -103,8 +106,9 @@ router.get('/', function (req, res) {
   - - - - - - - - - -  LOCATION INDEX PAGE - - - - - - - - - -
 */
 router.get('/location/', function (req, res) {
-  var data = addPhaseKey(req.app.locals.data)
-  data = _.groupBy(req.app.locals.data, 'location')
+  var data = load.getProjects()
+  data = addPhaseKey(data)
+  data = _.groupBy(data, 'location')
   var newData = indexify(data)
 
   var locOrder = []
@@ -113,7 +117,7 @@ router.get('/location/', function (req, res) {
   })
   locOrder.sort()
 
-  var phases = _.countBy(req.app.locals.data, getPhase)
+  var phases = _.countBy(data, getPhase)
 
   res.render('index', {
     data: newData,
@@ -125,14 +129,15 @@ router.get('/location/', function (req, res) {
 })
 
 /*
-  - - - - - - - - - -  INDEX PAGE - - - - - - - - - -
+  - - - - - - - - - - PRIORITY INDEX PAGE - - - - - - - - - -
 */
 router.get('/priority/', function (req, res) {
-  var data = addPhaseKey(req.app.locals.data)
-  data = _.groupBy(req.app.locals.data, 'priority')
+  var data = load.getProjects()
+  data = addPhaseKey(data)
+  data = _.groupBy(data, 'priority')
   var newData = indexify(data)
 
-  var phases = _.countBy(req.app.locals.data, getPhase)
+  var phases = _.countBy(data, getPhase)
 
   res.render('index', {
     data: newData,
@@ -148,7 +153,8 @@ router.get('/priority/', function (req, res) {
   - - - - - - - - - -  PROJECT PAGE - - - - - - - - - -
 */
 router.get('/projects/:id/:slug', function (req, res) {
-  var data = _.findWhere(req.app.locals.data, { id: parseInt(req.params.id) })
+  var data = load.getProjects()
+  data = _.findWhere(data, { id: parseInt(req.params.id) })
   res.render('project', {
     data: data,
     phase_order: phaseOrder
@@ -160,7 +166,8 @@ router.get('/projects/:id/:slug', function (req, res) {
 */
 router.get('/projects/:id/:slug/prototype', function (req, res) {
   var id = req.params.id
-  var data = _.findWhere(req.app.locals.data, {id: parseInt(id)})
+  var data = load.getProjects()
+  data = _.findWhere(data, {id: parseInt(id)})
   if (typeof data.prototype === 'undefined') {
     res.render('no-prototype', {
       data: data
@@ -175,12 +182,14 @@ router.get('/projects/:id/:slug/prototype', function (req, res) {
 */
 
 router.get('/api', function (req, res) {
-  console.log(req.app.locals.data)
-  res.json(req.app.locals.data)
+  var data = load.getProjects()
+  console.log(data)
+  res.json(data)
 })
 
 router.get('/api/:id', function (req, res) {
-  var data = _.findWhere(req.app.locals.data, {id: (parseInt(req.params.id))})
+  var data = load.getProjects()
+  data = _.findWhere(data, {id: (parseInt(req.params.id))})
   if (data) {
     res.json(data)
   } else {
