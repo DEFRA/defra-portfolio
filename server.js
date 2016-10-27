@@ -2,6 +2,7 @@ var path = require('path')
 var express = require('express')
 var browserSync = require('browser-sync')
 var nunjucks = require('express-nunjucks')
+var load = require(path.join(__dirname, '/auto_update/load.js'))
 require(path.join(__dirname, '/auto_update/cron.js'))
 var routes = require(path.join(__dirname, '/app/routes.js'))
 var disRoutes = require(path.join(__dirname, '/app/views/display/routes.js'))
@@ -69,6 +70,8 @@ app.get(/^\/([^.]+)$/, function (req, res) {
     }
   })
 })
+
+load.updateProjects()
 
 // start the app
 if (env === 'production') {
