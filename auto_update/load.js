@@ -44,7 +44,6 @@ load.getProjects = function () {
 */
 load.updateProjects = function () {
   console.log('Starting update...')
-  console.log(process.env);
 
   // Get the current portfolio projects
   var portfolioProjects = load.getProjects()
@@ -123,7 +122,7 @@ function _updateProjects (portfolioProjects, projectOnlineProjects) {
   console.log('Updating project files')
 
   // Get the ID fields used in each array of projects
-  var portfolioIdField = config.portfolioIdField
+  // var portfolioIdField = config.portfolioIdField
   var projectOnlineIdField = config.projectOnlineIdField
 
   _.forEach(projectOnlineProjects, function (projectOnlineProject, index) {
@@ -157,8 +156,18 @@ function _updateProjects (portfolioProjects, projectOnlineProjects) {
     }
 
     // Write the portfolio project to disk
-    fs.writeFile(path.join(__dirname, '/../lib/projects/', filename), JSON.stringify(portfolioProject, null, 2), function (err) {
+    filename = path.join(__dirname, '/../lib/projects/', filename)
+    fs.writeFile(filename, JSON.stringify(portfolioProject, null, 2), function (err) {
       if (err) throw err
+    })
+  })
+
+  fs.readdir(path.join(__dirname, '/../lib/projects/'), (err, files) => {
+    if (err) {
+      throw err
+    }
+    files.forEach(file => {
+      console.log(file)
     })
   })
 
