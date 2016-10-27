@@ -6,7 +6,7 @@ var load = require(path.join(__dirname, '/load.js'))
 // Project Online every Friday night at 9pm
 var job = new CronJob({
   //cronTime: '00 00 21 * * 5',
-  cronTime: '0 * */1 * * *',
+  cronTime: '0 30 */1 * * *',
   onTick: function () {
     load.updateProjects()
   },
