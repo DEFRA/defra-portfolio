@@ -5,6 +5,9 @@ var csomapi = require('csom-node')
 var o = require('odata')
 var path = require('path')
 var config = JSON.parse(fs.readFileSync(path.join(__dirname, '/config.json')))
+var massive = require('massive')
+var express = require('express')
+var app = express()
 
 var load = {}
 
@@ -12,31 +15,32 @@ var defaultProjectSchema = JSON.parse(fs.readFileSync(path.join(__dirname, '/../
 
 var settings = {
   url: process.env.PROJECT_ONLINE_URL.toString(),
+  projectSite: process.env.PROJECT_ONLINE_SITE.toString(),
   username: process.env.PROJECT_ONLINE_USERNAME,
-  password: process.env.PROJECT_ONLINE_PASSWORD
+  password: process.env.PROJECT_ONLINE_PASSWORD,
+  databaseUrl: process.env.DATABASE_URL
 }
 
+var dbInstance = massive.connectSync({connectionString: settings.databaseUrl})
+app.set('db', dbInstance)
+
 /*
-  Load all the project data from the files.
+  Load all the project data from the database.
 */
 load.getProjects = function () {
-  // Get all the project files
-  var files = fs.readdirSync(path.join(__dirname, '/../lib/projects/'))
+  return new Promise(function (resolve, reject) {
+    var projects = []
+    var db = app.get('db')
+    db.defra.project.find({'project_json <>': null}, function (err, results) {
+      if (err) reject(err)
 
-  // Read each file and merge with the default project schema
-  var projects = []
-  _.each(files, function (el) {
-    if (el === 'defaults.js') return
-    var file = fs.readFileSync(path.join(__dirname, '/../lib/projects/' + el)).toString()
-    try {
-      var json = merge(true, defaultProjectSchema, JSON.parse(file))
-      json.filename = el
-      projects.push(json)
-    } catch (err) {
-      console.log(err)
-    }
+      _.forEach(results, function (result) {
+        projects.push(JSON.parse(result['project_json']))
+      })
+
+      resolve(projects)
+    })
   })
-  return projects
 }
 
 /*
@@ -46,71 +50,75 @@ load.updateProjects = function () {
   console.log('Starting update...')
 
   // Get the current portfolio projects
-  var portfolioProjects = load.getProjects()
+  load.getProjects()
+    .then(portfolioProjects => {
+      // Set the base Sharepoint URL to authenticate against
+      csomapi.setLoaderOptions({
+        url: settings.url
+      })
 
-  // Set the base Sharepoint URL to authenticate against
-  csomapi.setLoaderOptions({
-    url: settings.url
-  })
+      // Get the authentication token for use in all OData calls
+      var authCtx = new csomapi.AuthenticationContext(settings.url)
+      authCtx.acquireTokenForUser(settings.username, settings.password, function (err, data) {
+        if (err) throw err
 
-  // Get the authentication token for use in all OData calls
-  var authCtx = new csomapi.AuthenticationContext(settings.url)
-  authCtx.acquireTokenForUser(settings.username, settings.password, function (err, data) {
-    if (err) throw err
+        // Setup config for the OData requests;
+        // include the O365 authentication in the header
+        o().config({
+          error: function (status, message) {
+            console.error(status + ': ' + message)
+          },
+          headers: [{
+            name: 'cookie',
+            value: 'FedAuth=' + authCtx.FedAuth + '; rtFa=' + authCtx.rtFa
+          }]
+        })
 
-    // Setup config for the OData requests;
-    // include the O365 authentication in the header
-    o().config({
-      error: function (status, message) {
-        console.error(status + ': ' + message)
-      },
-      headers: [{
-        name: 'cookie',
-        value: 'FedAuth=' + authCtx.FedAuth + '; rtFa=' + authCtx.rtFa
-      }]
-    })
+        var projectOnlineProjects = []
+        var projectOnlineCount = 0
+        var count = 0
 
-    var projectOnlineProjects = []
-    var projectOnlineCount = 0
-    var count = 0
+        // Setup the OData handler to retrieve all project details
+        var oHandler = o(settings.url + 'sites/' + settings.projectSite + '/_api/Projectdata/Projects()')
+        oHandler.filter("ProjectType ne 7 and EnterpriseProjectTypeName eq 'CIS Project' and ProjectStatus eq 'Active' and Changecategory eq 'Digital public services'")
+        oHandler.orderBy('ProjectName')
 
-    // Setup the OData handler to retrieve all project details
-    var oHandler = o('https://envagency.sharepoint.com/sites/pwa/_api/Projectdata/Projects()')
-    oHandler.filter("ProjectType ne 7 and EnterpriseProjectTypeName eq 'CIS Project' and ProjectStatus eq 'Active' and Changecategory eq 'Digital public services'")
-    oHandler.orderBy('ProjectName')
+        oHandler.get(function (projects) {
+          projectOnlineCount = projects.length
 
-    oHandler.get(function (projects) {
-      projectOnlineCount = projects.length
+          _.forEach(projects, function (project) {
+            // Setup the OData handler to retrieve all task details for a project
+            oHandler = o(settings.url + 'sites/' + settings.projectSite + '/_api/Projectdata/Tasks()')
+            oHandler.filter("ProjectId eq guid'" + project.ProjectId + "' and (TaskName eq 'Discovery' or TaskName eq 'Alpha phase' or TaskName eq 'Beta phase' or TaskName eq 'Move to Live')")
 
-      _.forEach(projects, function (project) {
-        // Setup the OData handler to retrieve all task details for a project
-        oHandler = o('https://envagency.sharepoint.com/sites/pwa/_api/Projectdata/Tasks()')
-        oHandler.filter("ProjectId eq guid'" + project.ProjectId + "' and (TaskName eq 'Discovery' or TaskName eq 'Alpha phase' or TaskName eq 'Beta phase' or TaskName eq 'Move to Live')")
+            oHandler.get(function (tasks) {
+              project.Tasks = []
 
-        oHandler.get(function (tasks) {
-          project.Tasks = []
+              // Store the start and finish date for each task
+              _.forEach(tasks, function (task) {
+                project.Tasks.push({
+                  TaskName: task.TaskName,
+                  TaskStartDate: task.TaskStartDate,
+                  TaskFinishDate: task.TaskFinishDate
+                })
+              })
 
-          // Store the start and finish date for each task
-          _.forEach(tasks, function (task) {
-            project.Tasks.push({
-              TaskName: task.TaskName,
-              TaskStartDate: task.TaskStartDate,
-              TaskFinishDate: task.TaskFinishDate
+              projectOnlineProjects.push(project)
+              count++
+
+              // Update the projects once all the projects' tasks have been returned
+              if (count === projectOnlineCount) {
+                console.log('Finished getting projects and tasks from Project Online')
+                _updateProjects(portfolioProjects, projectOnlineProjects)
+              }
             })
           })
-
-          projectOnlineProjects.push(project)
-          count++
-
-          // Update the projects once all the projects' tasks have been returned
-          if (count === projectOnlineCount) {
-            console.log('Finished getting projects and tasks from Project Online')
-            _updateProjects(portfolioProjects, projectOnlineProjects)
-          }
         })
       })
     })
-  })
+    .catch(err => {
+      throw err
+    })
 }
 
 /*
@@ -119,7 +127,7 @@ load.updateProjects = function () {
   project file is created.
 */
 function _updateProjects (portfolioProjects, projectOnlineProjects) {
-  console.log('Updating project files')
+  console.log('Updating projects...')
 
   // Get the ID fields used in each array of projects
   // var portfolioIdField = config.portfolioIdField
@@ -129,20 +137,11 @@ function _updateProjects (portfolioProjects, projectOnlineProjects) {
     // Try and find a matching portfolio project
     var portfolioProject = _.findWhere(portfolioProjects, {portfolioIdField: projectOnlineProject[projectOnlineIdField]})
 
-    // Set the filename to be used when saving the project details
-    var filename = ''
-    if (portfolioProject) {
-      filename = portfolioProject.filename
-    }
-    if (filename === '') {
-      filename = _getFilename(projectOnlineProject[config.filenameField])
-    }
-
     // Create a translated version and merge with the default portfolio project schema
     var translatedOnlineProject = _translatedOnlineProject(projectOnlineProject)
     translatedOnlineProject = merge(true, defaultProjectSchema, translatedOnlineProject)
 
-    // Perform an update or create a new project file
+    // Perform an update or create a new project
     if (portfolioProject) {
       portfolioProject = merge(true, portfolioProject, translatedOnlineProject)
     } else {
@@ -150,34 +149,29 @@ function _updateProjects (portfolioProjects, projectOnlineProjects) {
       portfolioProject = translatedOnlineProject
     }
 
-    // Remove the filename parameter before saving
-    if (portfolioProject.filename) {
-      delete portfolioProject.filename
+    // Write the portfolio project to the database
+    var projectId = portfolioProject[config.portfolioIdField]
+    var project = {
+      project_id: projectId,
+      project_json: JSON.stringify(portfolioProject)
     }
+    var db = app.get('db')
+    db.defra.project.find({project_id: projectId}, function (findErr, findResult) {
+      if (findErr) throw findErr
 
-    // Write the portfolio project to disk
-    filename = path.join(__dirname, '/../lib/projects/', filename)
-    fs.writeFile(filename, JSON.stringify(portfolioProject, null, 2), function (err) {
-      if (err) throw err
+      if (findResult && findResult.length > 0) {
+        db.defra.project.update(project, function (updateErr, updateResult) {
+          if (updateErr) throw updateErr
+        })
+      } else {
+        db.defra.project.insert(project, function (insertErr, insertResult) {
+          if (insertErr) throw insertErr
+        })
+      }
     })
   })
 
-  console.log('Completed update')
-}
-
-/*
-  Returns a filename given a project name.
-*/
-function _getFilename (projectName) {
-  var filename = []
-  var split = projectName.split(' ')
-  _.forEach(split, function (s) {
-    var first = s.substr(0, 1).toLowerCase()
-    if (first !== '(' && first !== ')') {
-      filename.push(first)
-    }
-  })
-  return filename.join('') + '.js'
+  console.log('Completed update.')
 }
 
 /*

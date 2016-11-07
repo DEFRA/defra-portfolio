@@ -88,77 +88,97 @@ function getPhase (obj) {
   - - - - - - - - - -  INDEX PAGE - - - - - - - - - -
 */
 router.get('/', function (req, res) {
-  var data = load.getProjects()
-  data = addPhaseKey(data)
-  data = _.groupBy(data, 'theme')
-  var newData = indexify(data)
-  var phases = _.countBy(data, getPhase)
-  res.render('index', {
-    data: newData,
-    counts: phases,
-    view: 'theme',
-    theme_order: themeOrder,
-    phase_order: phaseOrder
-  })
+  load.getProjects()
+    .then(data => {
+      data = addPhaseKey(data)
+      data = _.groupBy(data, 'theme')
+      var newData = indexify(data)
+      var phases = _.countBy(data, getPhase)
+      res.render('index', {
+        data: newData,
+        counts: phases,
+        view: 'theme',
+        theme_order: themeOrder,
+        phase_order: phaseOrder
+      })
+    })
+    .catch(err => {
+      throw err
+    })
 })
 
 /*
   - - - - - - - - - -  LOCATION INDEX PAGE - - - - - - - - - -
 */
 router.get('/location/', function (req, res) {
-  var data = load.getProjects()
-  data = addPhaseKey(data)
-  data = _.groupBy(data, 'location')
-  var newData = indexify(data)
+  load.getProjects()
+    .then(data => {
+      data = addPhaseKey(data)
+      data = _.groupBy(data, 'location')
+      var newData = indexify(data)
 
-  var locOrder = []
-  _.each(data, function (value, key, list) {
-    locOrder.push(key)
-  })
-  locOrder.sort()
+      var locOrder = []
+      _.each(data, function (value, key, list) {
+        locOrder.push(key)
+      })
+      locOrder.sort()
 
-  var phases = _.countBy(data, getPhase)
+      var phases = _.countBy(data, getPhase)
 
-  res.render('index', {
-    data: newData,
-    counts: phases,
-    view: 'location',
-    theme_order: locOrder,
-    phase_order: phaseOrder
-  })
+      res.render('index', {
+        data: newData,
+        counts: phases,
+        view: 'location',
+        theme_order: locOrder,
+        phase_order: phaseOrder
+      })
+    })
+    .catch(err => {
+      throw err
+    })
 })
 
 /*
   - - - - - - - - - - PRIORITY INDEX PAGE - - - - - - - - - -
 */
 router.get('/priority/', function (req, res) {
-  var data = load.getProjects()
-  data = addPhaseKey(data)
-  data = _.groupBy(data, 'priority')
-  var newData = indexify(data)
+  load.getProjects()
+    .then(data => {
+      data = addPhaseKey(data)
+      data = _.groupBy(data, 'priority')
+      var newData = indexify(data)
 
-  var phases = _.countBy(data, getPhase)
+      var phases = _.countBy(data, getPhase)
 
-  res.render('index', {
-    data: newData,
-    counts: phases,
-    view: 'priority',
-    theme_order: priorityOrder,
-    phase_order: phaseOrder,
-    priority_descriptions: priorityDescriptions
-  })
+      res.render('index', {
+        data: newData,
+        counts: phases,
+        view: 'priority',
+        theme_order: priorityOrder,
+        phase_order: phaseOrder,
+        priority_descriptions: priorityDescriptions
+      })
+    })
+    .catch(err => {
+      throw err
+    })
 })
 
 /*
   - - - - - - - - - -  PROJECT PAGE - - - - - - - - - -
 */
 router.get('/projects/:id/:slug', function (req, res) {
-  var data = load.getProjects()
-  data = _.findWhere(data, { id: parseInt(req.params.id) })
-  res.render('project', {
-    data: data,
-    phase_order: phaseOrder
-  })
+  load.getProjects()
+    .then(data => {
+      data = _.findWhere(data, { id: parseInt(req.params.id) })
+      res.render('project', {
+        data: data,
+        phase_order: phaseOrder
+      })
+    })
+    .catch(err => {
+      throw err
+    })
 })
 
 /*
@@ -166,15 +186,20 @@ router.get('/projects/:id/:slug', function (req, res) {
 */
 router.get('/projects/:id/:slug/prototype', function (req, res) {
   var id = req.params.id
-  var data = load.getProjects()
-  data = _.findWhere(data, {id: parseInt(id)})
-  if (typeof data.prototype === 'undefined') {
-    res.render('no-prototype', {
-      data: data
+  load.getProjects()
+    .then(data => {
+      data = _.findWhere(data, {id: parseInt(id)})
+      if (typeof data.prototype === 'undefined') {
+        res.render('no-prototype', {
+          data: data
+        })
+      } else {
+        res.redirect(data.prototype)
+      }
     })
-  } else {
-    res.redirect(data.prototype)
-  }
+    .catch(err => {
+      throw err
+    })
 })
 
 /*
@@ -182,19 +207,29 @@ router.get('/projects/:id/:slug/prototype', function (req, res) {
 */
 
 router.get('/api', function (req, res) {
-  var data = load.getProjects()
-  console.log(data)
-  res.json(data)
+  load.getProjects()
+    .then(data => {
+      console.log(data)
+      res.json(data)
+    })
+    .catch(err => {
+      throw err
+    })
 })
 
 router.get('/api/:id', function (req, res) {
-  var data = load.getProjects()
-  data = _.findWhere(data, {id: (parseInt(req.params.id))})
-  if (data) {
-    res.json(data)
-  } else {
-    res.json({error: 'ID not found'})
-  }
+  load.getProjects()
+    .then(data => {
+      data = _.findWhere(data, {id: (parseInt(req.params.id))})
+      if (data) {
+        res.json(data)
+      } else {
+        res.json({error: 'ID not found'})
+      }
+    })
+    .catch(err => {
+      throw err
+    })
 })
 
 module.exports = router
