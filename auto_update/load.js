@@ -5,6 +5,7 @@ var csomapi = require('csom-node')
 var o = require('odata')
 var path = require('path')
 var config = JSON.parse(fs.readFileSync(path.join(__dirname, '/config.json')))
+var moment = require('moment')
 var massive = require('massive')
 var express = require('express')
 var app = express()
@@ -23,6 +24,28 @@ var settings = {
 
 var dbInstance = massive.connectSync({connectionString: settings.databaseUrl})
 app.set('db', dbInstance)
+
+/*
+  Get the last time the projects were updated.
+*/
+load.getLastUpdateTime = function () {
+  return new Promise(function (resolve, reject) {
+    var lastUpdateTime
+    var db = app.get('db')
+    db.defra.config.find({key: 'lastUpdateTime'}, function (err, result) {
+      if (err) throw err
+
+      if (result && result.length > 0) {
+        lastUpdateTime = result[0].value
+      } else {
+        var date = moment()
+        lastUpdateTime = date.format('Do MMMM YYYY') + ' at ' + date.format('HH:mm')
+      }
+
+      resolve(lastUpdateTime)
+    })
+  })
+}
 
 /*
   Load all the project data from the database.
@@ -129,8 +152,9 @@ load.updateProjects = function () {
 function _updateProjects (portfolioProjects, projectOnlineProjects) {
   console.log('Updating projects...')
 
+  var db = app.get('db')
+
   // Get the ID fields used in each array of projects
-  // var portfolioIdField = config.portfolioIdField
   var projectOnlineIdField = config.projectOnlineIdField
 
   _.forEach(projectOnlineProjects, function (projectOnlineProject, index) {
@@ -155,7 +179,6 @@ function _updateProjects (portfolioProjects, projectOnlineProjects) {
       project_id: projectId,
       project_json: JSON.stringify(portfolioProject)
     }
-    var db = app.get('db')
     db.defra.project.find({project_id: projectId}, function (findErr, findResult) {
       if (findErr) throw findErr
 
@@ -169,6 +192,26 @@ function _updateProjects (portfolioProjects, projectOnlineProjects) {
         })
       }
     })
+  })
+
+  var lastUpdateTime = {
+    key: 'lastUpdateTime'
+  }
+  db.defra.config.find(lastUpdateTime, function (err, result) {
+    if (err) throw err
+
+    var date = moment()
+    lastUpdateTime.value = date.format('Do MMMM YYYY') + ' at ' + date.format('HH:mm')
+
+    if (result && result.length > 0) {
+      db.defra.config.update(lastUpdateTime, function (err, updateResult) {
+        if (err) throw err
+      })
+    } else {
+      db.defra.config.insert(lastUpdateTime, function (err, insertResult) {
+        if (err) throw err
+      })
+    }
   })
 
   console.log('Completed update.')

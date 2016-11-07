@@ -94,13 +94,17 @@ router.get('/', function (req, res) {
       data = _.groupBy(data, 'theme')
       var newData = indexify(data)
       var phases = _.countBy(data, getPhase)
-      res.render('index', {
-        data: newData,
-        counts: phases,
-        view: 'theme',
-        theme_order: themeOrder,
-        phase_order: phaseOrder
-      })
+      load.getLastUpdateTime()
+        .then(lastUpdateTime => {
+          res.render('index', {
+            data: newData,
+            counts: phases,
+            view: 'theme',
+            theme_order: themeOrder,
+            phase_order: phaseOrder,
+            last_update_time: lastUpdateTime
+          })
+        })
     })
     .catch(err => {
       throw err
@@ -125,13 +129,17 @@ router.get('/location/', function (req, res) {
 
       var phases = _.countBy(data, getPhase)
 
-      res.render('index', {
-        data: newData,
-        counts: phases,
-        view: 'location',
-        theme_order: locOrder,
-        phase_order: phaseOrder
-      })
+      load.getLastUpdateTime()
+        .then(lastUpdateTime => {
+          res.render('index', {
+            data: newData,
+            counts: phases,
+            view: 'location',
+            theme_order: locOrder,
+            phase_order: phaseOrder,
+            last_update_time: lastUpdateTime
+          })
+        })
     })
     .catch(err => {
       throw err
@@ -150,14 +158,18 @@ router.get('/priority/', function (req, res) {
 
       var phases = _.countBy(data, getPhase)
 
-      res.render('index', {
-        data: newData,
-        counts: phases,
-        view: 'priority',
-        theme_order: priorityOrder,
-        phase_order: phaseOrder,
-        priority_descriptions: priorityDescriptions
-      })
+      load.getLastUpdateTime()
+        .then(lastUpdateTime => {
+          res.render('index', {
+            data: newData,
+            counts: phases,
+            view: 'priority',
+            theme_order: priorityOrder,
+            phase_order: phaseOrder,
+            priority_descriptions: priorityDescriptions,
+            last_update_time: lastUpdateTime
+          })
+        })
     })
     .catch(err => {
       throw err

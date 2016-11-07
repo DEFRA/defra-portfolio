@@ -44,7 +44,7 @@
 
 	{#
 		theme_order & phase_order are set in routes.js
-		so them can be used in multiple pages.
+		so they can be used in multiple pages.
 	#}
 
 	{% for name in theme_order %}
@@ -82,7 +82,7 @@
 
 	{% endfor %}
 
-	<p style="margin-top: 100px">Last updated 07 November 2016. <a href="/about">About the digital portfolio</a><p>
+	<p style="margin-top: 100px">Last updated {{ last_update_time }}. <a href="/about">About the digital portfolio</a><p>
 
 </main>
 
