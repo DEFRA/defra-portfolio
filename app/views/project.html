@@ -15,8 +15,6 @@
 
 			<p>{{ data.description }}</p>
 
-			<div class="location">Based in <strong>{{ data.location }}</strong></div>
-
 			{% if data.video %}
                 <div style="margin-top:30px;" class="videoWrapper">
                     <iframe width="560" height="315" src="{{ data.video }}" frameborder="0" allowfullscreen></iframe>
@@ -40,7 +38,7 @@
             <h2 class="heading-medium">Anticipated Cost</h2>
             <p>{{ data.cost | default('Not set') }}</p>
 
-			<h2 class="heading-medium">Project history</h2>
+			<h2 class="heading-medium">Project timeline</h2>
 			<div class="phase-history">
 				{% for phase in phase_order %}
 					{% if data["phase-history"][phase].length %}

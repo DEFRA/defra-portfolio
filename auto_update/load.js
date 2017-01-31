@@ -17,6 +17,7 @@ var defaultProjectSchema = JSON.parse(fs.readFileSync(path.join(__dirname, '/../
 var settings = {
   url: process.env.PROJECT_ONLINE_URL.toString(),
   projectSite: process.env.PROJECT_ONLINE_SITE.toString(),
+  projectFilter: process.env.PROJECT_ONLINE_FILTER.toString(),
   username: process.env.PROJECT_ONLINE_USERNAME,
   password: process.env.PROJECT_ONLINE_PASSWORD,
   databaseUrl: process.env.DATABASE_URL
@@ -103,38 +104,43 @@ load.updateProjects = function () {
 
         // Setup the OData handler to retrieve all project details
         var oHandler = o(settings.url + 'sites/' + settings.projectSite + '/_api/Projectdata/Projects()')
-        oHandler.filter("ProjectType ne 7 and EnterpriseProjectTypeName eq 'CIS Project' and ProjectStatus eq 'Active' and Changecategory eq 'Digital public services'")
+        oHandler.filter("ProjectType ne 7 and ProjectStatus eq 'Active'" + (settings.projectFilter ? ' and ' + settings.projectFilter : ''))
         oHandler.orderBy('ProjectName')
 
         oHandler.get(function (projects) {
           projectOnlineCount = projects.length
 
           _.forEach(projects, function (project) {
-            // Setup the OData handler to retrieve all task details for a project
-            oHandler = o(settings.url + 'sites/' + settings.projectSite + '/_api/Projectdata/Tasks()')
-            oHandler.filter("ProjectId eq guid'" + project.ProjectId + "' and (TaskName eq 'Discovery' or TaskName eq 'Alpha phase' or TaskName eq 'Beta phase' or TaskName eq 'Move to Live')")
+            // Filter out any projects starting with 'x_'
+            if (!project.ProjectName.startsWith('x_')) {
+              // Setup the OData handler to retrieve all task details for a project
+              oHandler = o(settings.url + 'sites/' + settings.projectSite + '/_api/Projectdata/Tasks()')
+              oHandler.filter("ProjectId eq guid'" + project.ProjectId + "' and (TaskName eq 'Discovery' or TaskName eq 'Alpha phase' or TaskName eq 'Beta phase' or TaskName eq 'Move to Live')")
 
-            oHandler.get(function (tasks) {
-              project.Tasks = []
+              oHandler.get(function (tasks) {
+                project.Tasks = []
 
-              // Store the start and finish date for each task
-              _.forEach(tasks, function (task) {
-                project.Tasks.push({
-                  TaskName: task.TaskName,
-                  TaskStartDate: task.TaskStartDate,
-                  TaskFinishDate: task.TaskFinishDate
+                // Store the start and finish date for each task
+                _.forEach(tasks, function (task) {
+                  project.Tasks.push({
+                    TaskName: task.TaskName,
+                    TaskStartDate: task.TaskStartDate,
+                    TaskFinishDate: task.TaskFinishDate
+                  })
                 })
+
+                projectOnlineProjects.push(project)
+                count++
+
+                // Update the projects once all the projects' tasks have been returned
+                if (count === projectOnlineCount) {
+                  console.log('Finished getting projects and tasks from Project Online')
+                  _updateProjects(portfolioProjects, projectOnlineProjects)
+                }
               })
-
-              projectOnlineProjects.push(project)
-              count++
-
-              // Update the projects once all the projects' tasks have been returned
-              if (count === projectOnlineCount) {
-                console.log('Finished getting projects and tasks from Project Online')
-                _updateProjects(portfolioProjects, projectOnlineProjects)
-              }
-            })
+            } else {
+              projectOnlineCount--
+            }
           })
         })
       })

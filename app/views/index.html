@@ -10,9 +10,8 @@
 
 	<p style="margin-top:30px;">
 		These are all the things we're doing
-		{% if view != 'theme' %}(<a href="/">order by theme</a>){% endif %}
-		{% if view != 'location' %}(<a href="/location/">order by location</a>){% endif %}
-		{% if view != 'priority' %}(<a href="/priority/">order by priority</a>){% endif %}
+		<!--{% if view != 'programme' %}(<a href="/">order by programme</a>){% endif %}
+		{% if view != 'status' %}(<a href="/status/">order by status</a>){% endif %}-->
 	</p>
 
 	<div class="grid-row">
@@ -43,18 +42,14 @@
 	</div>
 
 	{#
-		theme_order & phase_order are set in routes.js
+		project_order & phase_order are set in routes.js
 		so they can be used in multiple pages.
 	#}
 
-	{% for name in theme_order %}
+	{% for name in project_order %}
 
 		{% set item = data[name] %}
 		<h2 class="heading-large service-area">{{ name }}</h2>
-
-		{% if view == 'priority' %}
-		<p>{{ priority_descriptions[name] }}</p>
-		{% endif %}
 
 		<div class="grid-row">
 		{% for phase in phase_order %}
@@ -63,13 +58,7 @@
 			{% if item[phase] %}
 
 				<ul class="link-list border-{{phase}}">
-				{% for bit in item[phase]['user'] %}
-					<li><a href="/projects/{{ bit.id }}/{{ bit.name | slugify }}">{{ bit.name }}</a></li>
-				{% endfor %}
-				</ul>
-
-				<ul class="link-list border-internal">
-				{% for bit in item[phase]['internal'] %}
+				{% for bit in item[phase] %}
 					<li><a href="/projects/{{ bit.id }}/{{ bit.name | slugify }}">{{ bit.name }}</a></li>
 				{% endfor %}
 				</ul>

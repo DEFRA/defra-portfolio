@@ -5,32 +5,6 @@ var path = require('path')
 var load = require(path.join(__dirname, '../auto_update/load.js'))
 
 /*
-  A way to force the ordering of the themes.
-*/
-var themeOrder = [
-  'Incidents & Assets Services',
-  'Permissions & Compliance Services',
-  'Monitoring Services',
-  'Livestock Information Services',
-  'Cross Defra Services',
-  'Common Architectural Services'
-]
-
-var priorityOrder = [
-  // 'Top',
-  'High',
-  'Medium',
-  'Low'
-]
-
-var priorityDescriptions = {
-  // Top: '',
-  High: '',
-  Medium: '',
-  Low: ''
-}
-
-/*
   A way to force the ordering of the phases.
 */
 var phaseOrder = [
@@ -63,8 +37,7 @@ function indexify (data) {
     var item = _.groupBy(value, 'phase-key')
     newData[key] = {}
     _.each(item, function (v, k, l) {
-      var piece = _.groupBy(v, 'facing')
-      newData[key][k] = piece
+      newData[key][k] = v
     })
   })
   return newData
@@ -91,16 +64,18 @@ router.get('/', function (req, res) {
   load.getProjects()
     .then(data => {
       data = addPhaseKey(data)
-      data = _.groupBy(data, 'theme')
+      data = _.groupBy(data, 'programme')
+      var programmes = _.keys(data).sort()
       var newData = indexify(data)
       var phases = _.countBy(data, getPhase)
+
       load.getLastUpdateTime()
         .then(lastUpdateTime => {
           res.render('index', {
             data: newData,
             counts: phases,
-            view: 'theme',
-            theme_order: themeOrder,
+            view: 'programme',
+            project_order: programmes,
             phase_order: phaseOrder,
             last_update_time: lastUpdateTime
           })
@@ -112,21 +87,15 @@ router.get('/', function (req, res) {
 })
 
 /*
-  - - - - - - - - - -  LOCATION INDEX PAGE - - - - - - - - - -
+  - - - - - - - - - - STATUS INDEX PAGE - - - - - - - - - -
 */
-router.get('/location/', function (req, res) {
+router.get('/status/', function (req, res) {
   load.getProjects()
     .then(data => {
       data = addPhaseKey(data)
-      data = _.groupBy(data, 'location')
+      data = _.groupBy(data, 'status')
+      var statuses = _.keys(data).sort()
       var newData = indexify(data)
-
-      var locOrder = []
-      _.each(data, function (value, key, list) {
-        locOrder.push(key)
-      })
-      locOrder.sort()
-
       var phases = _.countBy(data, getPhase)
 
       load.getLastUpdateTime()
@@ -134,39 +103,9 @@ router.get('/location/', function (req, res) {
           res.render('index', {
             data: newData,
             counts: phases,
-            view: 'location',
-            theme_order: locOrder,
+            view: 'status',
+            project_order: statuses,
             phase_order: phaseOrder,
-            last_update_time: lastUpdateTime
-          })
-        })
-    })
-    .catch(err => {
-      throw err
-    })
-})
-
-/*
-  - - - - - - - - - - PRIORITY INDEX PAGE - - - - - - - - - -
-*/
-router.get('/priority/', function (req, res) {
-  load.getProjects()
-    .then(data => {
-      data = addPhaseKey(data)
-      data = _.groupBy(data, 'priority')
-      var newData = indexify(data)
-
-      var phases = _.countBy(data, getPhase)
-
-      load.getLastUpdateTime()
-        .then(lastUpdateTime => {
-          res.render('index', {
-            data: newData,
-            counts: phases,
-            view: 'priority',
-            theme_order: priorityOrder,
-            phase_order: phaseOrder,
-            priority_descriptions: priorityDescriptions,
             last_update_time: lastUpdateTime
           })
         })

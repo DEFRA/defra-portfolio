@@ -17,6 +17,10 @@
       "projectOnline": "ProjectDescription"
     },
     {
+      "portfolio": "programme",
+      "projectOnline": "Programme"
+    },
+    {
       "portfolio": "phase",
       "projectOnline": "LifecycleStage",
       "translator": "phase"
