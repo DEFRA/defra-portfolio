@@ -23,37 +23,22 @@
                 </div>
 			{% endif %}
             
-            <h2 class="heading-medium">Anticipated Outcomes</h2>
-            <div style="margin-left:1em;">
-                {% for item in data["outcomes"] %}
-                    <li>{{ item }}</li>
-                {% endfor %}
-            </div>
-            
-            <h2 class="heading-medium">Planned Benefits</h2>
-            <div style="margin-left:1em;">
-                {% for item in data["benefits"] %}
-                    <li>{{ item }}</li>
-                {% endfor %}
-            </div>
-            
-            <h2 class="heading-medium">Anticipated Cost</h2>
-            <p>{{ data.cost | default('Not set') }}</p>
-
 			<h2 class="heading-medium">Project history</h2>
 			<div class="phase-history">
 				{% for phase in phase_order %}
 					{% if data["phase-history"][phase].length %}
 					<div class="phase-history-item border-{{phase}} txt-{{phase}}">
 						<h3><a href="#" class="tag tag-history {{phase}}">{{phase}}</a></h3>
-						{% for item in data["phase-history"][phase] %}
-							<p>
+						<ul class="list list-bullet">
+							{% for item in data["phase-history"][phase] %}
+							<li>
 								{{ item.label }} &mdash; {{item.date}}
 								{% if item.report %}
 									<br />(<a href="{{ item.report }}">assessment report</a>)
 								{% endif %}
-							</p>
-						{% endfor %}
+							</li>
+							{% endfor %}
+						</ul>
 					</div>
 					{% endif %}
 				{% endfor %}
@@ -69,7 +54,7 @@
 
 			{% if data.service %}
 			<br />
-			<p><a href="{{ data.service }}">Service</a></p>
+			<p><a href="{{ data.service }}">View service</a></p>
 			{% endif %}
 			<hr />
 
