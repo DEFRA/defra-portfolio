@@ -11,7 +11,7 @@
   110 - Flood Warning System
 200 - Permissions & Compliance Services
   201 - Record fishing catch return
-  202 - I want to fish
+  202 - Get a fishing licence
   203 - Apply for an International Waste Shipment notification
   204 - Submit a WEEE return
   205 - Data returns
