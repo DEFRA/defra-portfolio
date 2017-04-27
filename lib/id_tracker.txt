@@ -5,7 +5,7 @@
   104 - 5-day flood risk for England and Wales
   105 - Flood map for planning
   106 - Continuous defence line
-  107 - 
+  107 - Water resource licensing service
   108 - Flood Forecasting Service
   109 - Flood Asset Management - CAMC
   110 - Flood Warning System
