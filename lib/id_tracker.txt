@@ -9,6 +9,9 @@
   108 - Flood Forecasting Service
   109 - Flood Asset Management - CAMC
   110 - Flood Warning System
+  111 - Water resource licensing service
+  112 - 
+  113 - 
 200 - Permissions & Compliance Services
   201 - Record fishing catch return
   202 - Get a fishing licence
