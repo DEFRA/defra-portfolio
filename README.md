@@ -15,12 +15,12 @@
 - Alternatively, copy an existing project and change the details
 - When adding details, be sure to use an existing theme and location so that the sorting will work
 - If you require a new location or theme, please contact the site maintainer explaining why it is needed
-- Commit your work, create a pull request, and assign the site maintainer to review
+- Commit your work, create a pull request, and assign the site maintainer to review.
 
 ## Updating a service
 - Create a new branch prefixed with `update-` followed by the name of your service (abbreviation is fine)
 - Make your changes, *ensuring you also edit the `last updated` section on `/app/views/index.html`*
-- Commit your work, create a pull request, and assign the site maintainer to review
+- Commit your work, create a pull request, and assign the site maintainer to review.
 
 
 Site content is maintained by @liammcmurray https://github.com/liammcmurray
