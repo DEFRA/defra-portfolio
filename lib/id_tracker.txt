@@ -9,7 +9,7 @@
   108 - Flood Forecasting Service
   109 - Flood Asset Management - CAMC
   110 - Flood Warning System
-  111 - Water resource licensing service
+  111 - 
   112 - 
   113 - 
 200 - Permissions & Compliance Services
@@ -22,7 +22,9 @@
   207 - Flood risk assessment exemptions
   208 - Waste Policy & Delivery Challenge
   209 - Waste carriers
-  210 - 
+  210 - Water resource licensing service
+  211 - 
+  212 - 
 300 - Livestock Information Services
   301 - Animal disease testing service
   302 - Livestock Information - Policy & Delivery Challenge
@@ -42,6 +44,7 @@
   504 - Extreme Data Transfer
   505 - Farm Visits
   506 - People Finder
+  507 - 
 600 - Common Architectural Services
   601 - Data ETL
   602 - Integration Platform
