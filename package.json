@@ -3,7 +3,7 @@
   "description": "Web app for defra portfolio",
   "version": "0.0.1",
   "engines": {
-    "node": "4.x"
+    "node": "4.8.4"
   },
   "scripts": {
     "start": "node server.js",
