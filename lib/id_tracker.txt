@@ -8,8 +8,8 @@
   107 - Submit a proposal for flood and coastal erosion risk management project funding
   108 - 
   109 - Flood Asset Management - CAMC
-  110 - Flood Warning System
-  111 - 
+  110 - Flood Warning System (FWS)
+  111 - NeXt Warning System (XWS)
   112 - 
   113 - 
 200 - Permissions & Compliance Services
