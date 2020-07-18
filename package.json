@@ -30,7 +30,7 @@
     "grunt-text-replace": "0.3.12",
     "hogan.js": "3.0.2",
     "merge": "^1.2.0",
-    "minimist": "0.0.8",
+    "minimist": "1.2.5",
     "node-sass": "3.3.3",
     "readdir": "0.0.6",
     "serve-favicon": "2.3.0",
